@@ -1,7 +1,7 @@
 using Dash, DashHtmlComponents, DashCoreComponents
 using HTTP, CSV, DataFrames, JSON2
 
-external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
+external_stylesheets = ["https://cdn.jsdelivr.net/gh/espintos/dash_files@1420a74936bc74542f3be223c043fd5eb3eebe3c/assets/bootstrap.css"]
 
 app = dash(external_stylesheets=external_stylesheets)
 
@@ -10,7 +10,7 @@ df = read_remote_csv("https://raw.githubusercontent.com/plotly/datasets/master/g
 
 available_countries = unique(df.country)
 
-app.layout = html_div() do
+app.layout = html_div(style=(width = "500px", textAlign="center", backgroundColor = "rgb(240, 240, 240)")) do
     dcc_graph(id="clientside-graph"),
     dcc_store(
         id="clientside-figure-store",
@@ -96,5 +96,6 @@ callback!(
     """
 end
 
-port = parse(Int64, ENV["PORT"])
+#port = parse(Int64, ENV["PORT"])
+port = 8050
 run_server(app, "0.0.0.0", port)
