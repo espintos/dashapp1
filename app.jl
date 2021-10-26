@@ -29,5 +29,6 @@ callback!(
 end
 
 
-port=8050
+#port = 8050
+port = parse(Int64, ENV["PORT"]);
 run_server(app, "0.0.0.0", port)
