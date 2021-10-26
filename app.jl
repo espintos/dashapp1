@@ -1,16 +1,53 @@
-using Dash
+using Dash, DashBootstrapComponents
 using HTTP, CSV, DataFrames, JSON2
 
-external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
+s = ["https://cdn.jsdelivr.net/gh/espintos/dash_files@1420a74936bc74542f3be223c043fd5eb3eebe3c/assets/bootstrap.css"]
 
-app = dash(external_stylesheets=external_stylesheets)
+app = dash(external_stylesheets=s)
 
 read_remote_csv(url) = DataFrame(CSV.File(HTTP.get(url).body))
 df = read_remote_csv("https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv")
 
 available_countries = unique(df.country)
 
-app.layout = html_div(style=(width = "500px", textAlign="center")) do
+app.layout = html_div(style=(width = "100%", textAlign="center", backgroundColor = "rgb(240, 240, 240)")) do
+
+    dbc_row([
+        dbc_col([
+            html_img(
+                    src="http://www.plapiqui.conicet.gov.ar/wp-content/uploads/2019/11/logo_original.png",
+                    id="plapiqui-logo",
+                    style=Dict("height" => "110px",),
+                    )],
+                align="center",width=2,
+                ),
+
+        dbc_col([
+            html_div([
+                html_h1("Nombre de la App",style=Dict("margin-bottom" => "0px"),),
+                html_h2("Descripción 1",style=Dict("margin-bottom" => "0px"),),
+                html_h3("(Descripción 2)",style=Dict("margin-bottom" => "0px"),),
+                #html_a("Carrín and Crapiste (2008): Mathematical modeling of vegetable oil-solvent extraction in a multistage horizontal extractor",
+                #        href="https://www.sciencedirect.com/science/article/abs/pii/S0260877407004335", target="_blank", rel="noopener noreferrer"),
+                    ])
+                ],id="title",width=6,
+                ),
+
+        dbc_col([
+            html_img(src="https://raw.githubusercontent.com/espintos/dash_files/main/assets/logo-uns-conicet.png",
+                     id="conicet-logo",
+                     style=Dict("height" => "100px",),
+                    ),
+                ],id="conice-logo",align="center",width=2,
+                ),],id="header",justify="center",
+            ),
+
+#Esto es para dejar un espacio en blanco entre el encabezado y las cajas de introducción de datos.
+    html_br(),
+    html_p(),
+
+html_div(style=(width = "500px", display = "inline-block"),
+[
     dcc_graph(id="clientside-graph"),
     dcc_store(
         id="clientside-figure-store",
@@ -45,6 +82,7 @@ app.layout = html_div(style=(width = "500px", textAlign="center")) do
         options=[(label = x, value = x) for x in ["linear", "log"]],
         value="linear",
     ),
+    ],),
     html_hr(),
     html_details([
         html_summary("Contents of figure storage"),
@@ -96,4 +134,4 @@ callback!(
     """
 end
 
-run_server(app, "0.0.0.0", debug=true)
+run_server(app, "0.0.0.0", debug=false)
