@@ -1,29 +1,33 @@
 using Dash, DashHtmlComponents, DashCoreComponents;
 
-app = dash();
+app = dash()
 
 app.layout = html_div() do
-    dcc_dropdown(
-        id = "dropdown",
-        options = [
-            Dict("label" => "Los Angeles", "value" => "LA"),
-            Dict("label" => "New York City", "value" => "NYC"),
-            Dict("label" => "Montreal", "value" => "MTL")
-        ],
-        value = "LA"),
-    html_div(id = "display-value")
-end;
+    dcc_input(id = "input-4", value = "1", type = "text"),
+    html_tr((html_td("x^2 ="), html_td(id = "square"))),
+    html_tr((html_td("x^3 ="), html_td(id = "cube"))),
+    html_tr((html_td("2^x ="), html_td(id = "twos"))),
+    html_tr((html_td("3^x ="), html_td(id = "threes"))),
+    html_tr((html_td("x^x ="), html_td(id = "xx")))
+end
 
-callback!(app,
-    Output("display-value", "children"),
-    Input("dropdown", "value")) do value
-        "You've entered $(value)"
-end;
+callback!(
+    app,
+    Output("square", "children"),
+    Output("cube", "children"),
+    Output("twos", "children"),
+    Output("threes", "children"),
+    Output("xx", "children"),
+    Input("input-4", "value"),
+) do x
+    if x == "" || x == nothing
+        return ("", "", "", "", "")
+    end
 
-# the default Dash port is 8050, but for Heroku deployments, it's
-# important to ensure the server port matches the PORT environment
-# variable; when running the app on your own machine, omit this
-# unless PORT is set.
-port = parse(Int64, ENV["PORT"]);
+    x = parse(Int64, x)
+    return (x^2, x^3, 2^x, 3^x, x^x)
+end
 
+
+port=8050
 run_server(app, "0.0.0.0", port)
